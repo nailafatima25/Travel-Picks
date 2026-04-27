@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Travel Picks + Itineraries</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.4;
+      background: #f6f7fb;
+      color: #1f2937;
+    }
+    .header { background: white; border-bottom: 1px solid #e5e7eb; }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 28px 16px; }
+    h1 { margin: 0 0 6px; font-size: 30px; }
+    .subtitle { margin: 0 0 16px; color: #4b5563; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .controls input, .controls select {
+      padding: 10px 12px; border-radius: 10px;
+      border: 1px solid #d1d5db; background: #fff; font-size: 14px;
+    }
+    .controls input { flex: 1; min-width: 220px; }
+    .controls select { min-width: 180px; }
+    .main { max-width: 1100px; margin: 0 auto; padding: 18px 16px 60px; }
+    .section {
+      margin-top: 18px; background: white;
+      border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px;
+    }
+    .section-head {
+      display: flex; gap: 10px; justify-content: space-between;
+      align-items: baseline; flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .muted { color: #6b7280; margin: 0; }
+    .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      font-size: 12px; color: #374151; background: #eef2ff;
+      border: 1px solid #e0e7ff; padding: 4px 10px; border-radius: 999px;
+    }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 900px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+    .card {
+      border: 1px solid #e5e7eb; border-radius: 14px; padding: 14px;
+      background: #fff; display: flex; flex-direction: column; gap: 10px;
+    }
+    .card-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    .card h3 { margin: 0; font-size: 18px; }
+    .card .country { color: #6b7280; font-size: 13px; margin-top: 2px; }
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .badge {
+      font-size: 11px; padding: 3px 8px; border-radius: 999px;
+      border: 1px solid #e5e7eb; background: #f9fafb; color: #374151;
+    }
+    .desc { margin: 0; color: #374151; }
+    .meta { display: flex; gap: 12px; flex-wrap: wrap; color: #6b7280; font-size: 13px; }
+    .btn-row { display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
+    .btn {
+      border: 1px solid #d1d5db; background: white; padding: 9px 10px;
+      border-radius: 10px; cursor: pointer; font-size: 14px;
+    }
+    .btn:hover { background: #f9fafb; }
+    .btn.primary { border: 1px solid #c7d2fe; background: #eef2ff; }
+    .btn.primary:hover { background: #e0e7ff; }
+    .btn.danger { border: 1px solid #fecaca; background: #fff1f2; }
+    .btn.danger:hover { background: #ffe4e6; }
+    .empty-state {
+      text-align: center; padding: 18px; border: 1px dashed #d1d5db;
+      border-radius: 14px; margin-top: 12px;
+    }
+    .hidden { display: none !important; }
+    .footer { text-align: center; padding: 20px 10px; color: #6b7280; }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(17,24,39,0.55);
+      display: grid; place-items: center; padding: 16px; z-index: 50;
+    }
+    .modal {
+      width: min(720px, 100%); background: white;
+      border-radius: 16px; border: 1px solid #e5e7eb; overflow: hidden;
+    }
+    .modal-head {
+      padding: 14px 14px 10px; display: flex; justify-content: space-between;
+      align-items: center; border-bottom: 1px solid #e5e7eb;
+    }
+    .modal-head h3 { margin: 0; font-size: 18px; }
+    .icon-btn {
+      border: 1px solid #e5e7eb; background: #fff;
+      border-radius: 10px; padding: 6px 10px; cursor: pointer;
+    }
+    .icon-btn:hover { background: #f9fafb; }
+    .modal-body { padding: 14px; max-height: 65vh; overflow-y: auto; }
+    .itinerary-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 10px; margin: 10px 0 12px;
+    }
+    @media (max-width: 650px) { .itinerary-grid { grid-template-columns: 1fr; } }
+    .day { border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px; background: #fafafa; }
+    .day h4 { margin: 0 0 6px; font-size: 14px; }
+    .day ul { margin: 0; padding-left: 18px; color: #374151; }
+    .tips { border-top: 1px solid #e5e7eb; padding-top: 12px; }
+    .tips h4 { margin: 0 0 6px; }
+    .tips ul { margin: 0; padding-left: 18px; color: #374151; }
+    .modal-footer {
+      padding: 12px 14px; display: flex; gap: 10px;
+      justify-content: flex-end; border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <h1>Travel Picks</h1>
+    <p class="subtitle">Explore popular destinations + simple itineraries you can actually use.</p>
+    <div class="controls">
+      <input id="searchInput" type="text" placeholder="Search destinations (ex: Tokyo, beach, food)..." />
+      <select id="categorySelect">
+        <option value="all">All</option>
+        <option value="most-wanted">Most Wanted</option>
+        <option value="most-desired">Most Desired</option>
+        <option value="budget">Budget-Friendly</option>
+        <option value="family">Family</option>
+        <option value="adventure">Adventure</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <section class="section">
+    <div class="section-head">
+      <h2>Destinations</h2>
+      <div class="pill-row">
+        <span class="pill">Most Wanted</span>
+        <span class="pill">Most Desired</span>
+        <span class="pill">Budget</span>
+        <span class="pill">Family</span>
+        <span class="pill">Adventure</span>
+      </div>
+    </div>
+    <div id="cards" class="cards"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <h3>No matches found</h3>
+      <p>Try a different keyword or category.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Saved (Favorites)</h2>
+      <p class="muted">Saved destinations stay in your browser.</p>
+    </div>
+    <div id="savedCards" class="cards"></div>
+    <div id="savedEmptyState" class="empty-state">
+      <h3>No saved destinations yet</h3>
+      <p>Click "Save" on a destination card to add it here.</p>
+    </div>
+  </section>
+</main>
+
+<!-- Modal -->
+<div id="modalBackdrop" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Itinerary</h3>
+      <button id="closeModalBtn" class="icon-btn">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="modalIntro" class="muted"></p>
+      <div id="itineraryGrid" class="itinerary-grid"></div>
+      <div class="tips">
+        <h4>Quick tips</h4>
+        <ul id="modalTips"></ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="modalSaveBtn" class="btn primary">Save Destination</button>
+      <button id="modalCloseBtn" class="btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>Built by Naila Fatima • HTML/CSS/JS • Beginner Front-End Project</p>
+</footer>
+
+<script>
+  var destinations = [
+    {
+      id: "tokyo",
+      name: "Tokyo",
+      country: "Japan",
+      tags: ["most-wanted", "most-desired"],
+      vibe: "City, culture, food, tech",
+      bestTime: "March-May, Oct-Nov",
+      description: "A perfect mix of modern city life and traditional temples, plus amazing food and shopping.",
+      itinerary: [
+        { day: "Day 1", items: ["Shibuya Crossing", "Harajuku + Takeshita Street", "Meiji Shrine", "Dinner in Shinjuku"] },
+        { day: "Day 2", items: ["Asakusa + Senso-ji Temple", "Tokyo Skytree area", "Ueno Park", "Street food snacks"] },
+        { day: "Day 3", items: ["TeamLab (or museum)", "Tsukiji outer market", "Ginza walk", "Night views (Tokyo Tower)"] }
+      ],
+      tips: ["Buy a transit card for easy travel.", "Try a convenience store food tour.", "Keep cash for small shops."]
+    },
+    {
+      id: "paris",
+      name: "Paris",
+      country: "France",
+      tags: ["most-desired"],
+      vibe: "Art, romance, history",
+      bestTime: "April-June, Sep-Oct",
+      description: "Classic landmarks, museums, cafes, and beautiful neighborhoods to explore on foot.",
+      itinerary: [
+        { day: "Day 1", items: ["Eiffel Tower area", "Seine River walk", "Champs-Elysees", "Arc de Triomphe"] },
+        { day: "Day 2", items: ["Louvre Museum", "Tuileries Garden", "Ile de la Cite", "Notre-Dame area"] },
+        { day: "Day 3", items: ["Montmartre", "Sacre-Coeur", "Local bakery stop", "Evening cafe time"] }
+      ],
+      tips: ["Book museum tickets ahead.", "Use comfortable walking shoes.", "Visit neighborhoods, not just landmarks."]
+    },
+    {
+      id: "dubai",
+      name: "Dubai",
+      country: "UAE",
+      tags: ["most-wanted", "family"],
+      vibe: "Luxury, shopping, attractions",
+      bestTime: "Nov-Mar",
+      description: "Modern skyline, malls, desert experiences, and family-friendly attractions.",
+      itinerary: [
+        { day: "Day 1", items: ["Burj Khalifa area", "Dubai Mall", "Fountain show", "Dinner with a view"] },
+        { day: "Day 2", items: ["Desert safari", "Camel ride (optional)", "Sunset photos", "Traditional food"] },
+        { day: "Day 3", items: ["Beach morning", "Old Dubai + souks", "Museum visit", "Evening city walk"] }
+      ],
+      tips: ["Plan outdoor activities in cooler hours.", "Use metro for easy travel.", "Dress respectfully in public spaces."]
+    },
+    {
+      id: "istanbul",
+      name: "Istanbul",
+      country: "Turkiye",
+      tags: ["budget", "most-desired"],
+      vibe: "History, markets, views",
+      bestTime: "Apr-May, Sep-Oct",
+      description: "Historic sites, beautiful mosques, markets, and iconic views over the Bosphorus.",
+      itinerary: [
+        { day: "Day 1", items: ["Hagia Sophia area", "Blue Mosque", "Sultanahmet walk", "Local dessert stop"] },
+        { day: "Day 2", items: ["Grand Bazaar", "Spice Market", "Bosphorus ferry", "Sunset viewpoint"] },
+        { day: "Day 3", items: ["Galata Tower area", "Neighborhood cafes", "Museum time", "Night market walk"] }
+      ],
+      tips: ["Carry small cash for markets.", "Go early to avoid lines.", "Try local street foods safely."]
+    },
+    {
+      id: "banff",
+      name: "Banff",
+      country: "Canada",
+      tags: ["adventure", "most-wanted"],
+      vibe: "Mountains, lakes, hiking",
+      bestTime: "Jun-Sep (hiking), Dec-Feb (snow)",
+      description: "Stunning lakes, mountain views, and outdoor adventures for nature lovers.",
+      itinerary: [
+        { day: "Day 1", items: ["Lake Louise", "Short scenic hike", "Photography spots", "Relax in town"] },
+        { day: "Day 2", items: ["Moraine Lake (seasonal)", "Gondola ride", "Local trails", "Hot drink stop"] },
+        { day: "Day 3", items: ["Drive scenic route", "Easy viewpoint stops", "Picnic lunch", "Evening stroll"] }
+      ],
+      tips: ["Check weather and trail updates.", "Bring layers.", "Start early for parking and crowds."]
+    }
+  ];
+
+  var savedKey = "savedDestinations";
+
+  function loadSaved() {
+    try {
+      var raw = localStorage.getItem(savedKey);
+      var parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(e) { return []; }
+  }
+
+  function saveSaved(ids) {
+    localStorage.setItem(savedKey, JSON.stringify(ids));
+  }
+
+  function isSaved(id) {
+    return loadSaved().indexOf(id) !== -1;
+  }
+
+  var tagMap = {
+    "most-wanted": "Most Wanted",
+    "most-desired": "Most Desired",
+    "budget": "Budget",
+    "family": "Family",
+    "adventure": "Adventure"
+  };
+
+  function makeCard(dest, inSavedSection) {
+    var card = document.createElement("div");
+    card.className = "card";
+
+    var badgesHTML = dest.tags.map(function(t) {
+      return '<span class="badge">' + (tagMap[t] || t) + '</span>';
+    }).join("");
+
+    var saveLabel = isSaved(dest.id) ? "Saved" : "Save";
+    var removeBtn = inSavedSection ? '<button class="btn danger" data-action="remove">Remove</button>' : "";
+
+    card.innerHTML =
+      '<div class="card-top">' +
+        '<div><h3>' + dest.name + '</h3><div class="country">' + dest.country + '</div></div>' +
+        '<div class="badges">' + badgesHTML + '</div>' +
+      '</div>' +
+      '<p class="desc">' + dest.description + '</p>' +
+      '<div class="meta">' +
+        '<span><strong>Vibe:</strong> ' + dest.vibe + '</span>' +
+        '<span><strong>Best time:</strong> ' + dest.bestTime + '</span>' +
+      '</div>' +
+      '<div class="btn-row">' +
+        '<button class="btn primary" data-action="itinerary">View Itinerary</button>' +
+        '<button class="btn" data-action="save">' + saveLabel + '</button>' +
+        removeBtn +
+      '</div>';
+
+    card.querySelector('[data-action="itinerary"]').onclick = function() { openModal(dest.id); };
+    card.querySelector('[data-action="save"]').onclick = function() { toggleSave(dest.id); };
+    if (inSavedSection) {
+      card.querySelector('[data-action="remove"]').onclick = function() { removeSaved(dest.id); };
+    }
+    return card;
+  }
+
+  function render() {
+    var q = document.getElementById("searchInput").value.trim().toLowerCase();
+    var category = document.getElementById("categorySelect").value;
+
+    var filtered = destinations.filter(function(d) {
+      var matchSearch =
+        d.name.toLowerCase().indexOf(q) !== -1 ||
+        d.country.toLowerCase().indexOf(q) !== -1 ||
+        d.description.toLowerCase().indexOf(q) !== -1 ||
+        d.vibe.toLowerCase().indexOf(q) !== -1;
+      var matchCat = category === "all" || d.tags.indexOf(category) !== -1;
+      return matchSearch && matchCat;
+    });
+
+    var cardsEl = document.getElementById("cards");
+    cardsEl.innerHTML = "";
+    filtered.forEach(function(d) { cardsEl.appendChild(makeCard(d, false)); });
+
+    var emptyState = document.getElementById("emptyState");
+    if (filtered.length === 0) {
+      emptyState.classList.remove("hidden");
+    } else {
+      emptyState.classList.add("hidden");
+    }
+
+    renderSaved();
+  }
+
+  function renderSaved() {
+    var savedIds = loadSaved();
+    var savedDests = destinations.filter(function(d) { return savedIds.indexOf(d.id) !== -1; });
+
+    var savedCardsEl = document.getElementById("savedCards");
+    savedCardsEl.innerHTML = "";
+    savedDests.forEach(function(d) { savedCardsEl.appendChild(makeCard(d, true)); });
+
+    var savedEmpty = document.getElementById("savedEmptyState");
+    if (savedDests.length === 0) {
+      savedEmpty.classList.remove("hidden");
+    } else {
+      savedEmpty.classList.add("hidden");
+    }
+  }
+
+  function toggleSave(id) {
+    var saved = loadSaved();
+    if (saved.indexOf(id) === -1) {
+      saved.push(id);
+      saveSaved(saved);
+    }
+    render();
+  }
+
+  function removeSaved(id) {
+    var saved = loadSaved().filter(function(x) { return x !== id; });
+    saveSaved(saved);
+    render();
+  }
+
+  function openModal(id) {
+    var dest = null;
+    for (var i = 0; i < destinations.length; i++) {
+      if (destinations[i].id === id) { dest = destinations[i]; break; }
+    }
+    if (!dest) return;
+
+    document.getElementById("modalTitle").textContent = dest.name + " — Sample Itinerary";
+    document.getElementById("modalIntro").textContent = "A simple 3-day plan. Vibe: " + dest.vibe;
+
+    var grid = document.getElementById("itineraryGrid");
+    grid.innerHTML = "";
+    dest.itinerary.forEach(function(block) {
+      var dayDiv = document.createElement("div");
+      dayDiv.className = "day";
+      var listItems = block.items.map(function(x) { return "<li>" + x + "</li>"; }).join("");
+      dayDiv.innerHTML = "<h4>" + block.day + "</h4><ul>" + listItems + "</ul>";
+      grid.appendChild(dayDiv);
+    });
+
+    var tipsList = document.getElementById("modalTips");
+    tipsList.innerHTML = "";
+    dest.tips.forEach(function(t) {
+      var li = document.createElement("li");
+      li.textContent = t;
+      tipsList.appendChild(li);
+    });
+
+    document.getElementById("modalSaveBtn").textContent = isSaved(id) ? "Saved" : "Save Destination";
+    document.getElementById("modalSaveBtn").setAttribute("data-id", id);
+    document.getElementById("modalBackdrop").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("modalBackdrop").classList.add("hidden");
+  }
+
+  document.getElementById("closeModalBtn").onclick = closeModal;
+  document.getElementById("modalCloseBtn").onclick = closeModal;
+  document.getElementById("modalBackdrop").onclick = function(e) {
+    if (e.target === document.getElementById("modalBackdrop")) closeModal();
+  };
+  document.getElementById("modalSaveBtn").onclick = function() {
+    var id = this.getAttribute("data-id");
+    if (id && !isSaved(id)) {
+      toggleSave(id);
+      this.textContent = "Saved";
+    }
+  };
+
+  document.getElementById("searchInput").oninput = render;
+  document.getElementById("categorySelect").onchange = render;
+
+  render();
+</script>
+
+</body>
+</html>
