@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Travel Picks + Itineraries</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <h1>Travel Picks</h1>
+      <p class="subtitle">Explore popular destinations + simple itineraries you can actually use.</p>
+      <div class="controls">
+        <input id="searchInput" type="text" placeholder="Search destinations (ex: Tokyo, beach, food)..." />
+        <select id="categorySelect">
+          <option value="all">All</option>
+          <option value="most-wanted">Most Wanted</option>
+          <option value="most-desired">Most Desired</option>
+          <option value="budget">Budget-Friendly</option>
+          <option value="family">Family</option>
+          <option value="adventure">Adventure</option>
+        </select>
+      </div>
+    </div>
+  </header>
+  <main class="main">
+    <section class="section">
+      <div class="section-head">
+        <h2>Destinations</h2>
+        <div class="pill-row">
+          <span class="pill">Most Wanted</span>
+          <span class="pill">Most Desired</span>
+          <span class="pill">Budget</span>
+          <span class="pill">Family</span>
+          <span class="pill">Adventure</span>
+        </div>
+      </div>
+      <div id="cards" class="cards"></div>
+      <div id="emptyState" class="empty-state hidden">
+        <h3>No matches found</h3>
+        <p>Try a different keyword or category.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <h2>Saved (Favorites)</h2>
+        <p class="muted">Saved destinations stay in your browser.</p>
+      </div>
+      <div id="savedCards" class="cards"></div>
+      <div id="savedEmptyState" class="empty-state">
+        <h3>No saved destinations yet</h3>
+        <p>Click "Save" on a destination card to add it here.</p>
+      </div>
+    </section>
+  </main>
+  <!-- Modal -->
+  <div id="modalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">Itinerary</h3>
+        <button id="closeModalBtn" class="icon-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalIntro" class="muted"></p>
+        <div class="itinerary-grid" id="itineraryGrid"></div>
+        <div class="tips">
+          <h4>Quick tips</h4>
+          <ul id="modalTips"></ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="modalSaveBtn" class="btn primary">Save Destination</button>
+        <button id="modalCloseBtn" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <p>Built by Naila Fatima • HTML/CSS/JS • Beginner Front-End Project</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
