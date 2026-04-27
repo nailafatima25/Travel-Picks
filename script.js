@@ -1,6 +1,4 @@
 
-Copy
-
 const destinations = [
   {
     id: "tokyo",
