@@ -41,17 +41,6 @@ localStorage — saved destination IDs are stored in the browser so favorites pe
 
 Tools used: HTML5, CSS3, JavaScript (ES6), browser localStorage API, CSS Grid, Flexbox.
 
-💻 How To Run Locally
-No installation needed — just open the file in a browser!
-bash# Step 1: Clone the repository
-git clone https://github.com/YourUsername/travel-picks.git
-cd travel-picks
-
-# Step 2: Open in browser
-open index.html
-# or just double-click index.html in your file explorer
-Or view it live on GitHub Pages:
-
 🌐 Live Demo (replace with your real URL)
 
 
